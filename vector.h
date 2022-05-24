@@ -19,15 +19,42 @@ typedef struct{
 	float y;
 }vec2f;
 
-static void vec2fAdd(vec2f* dest, vec2f* src1, vec2f* src2);
+
+/* returns the magnitude of a vec2f `v` as a scalar */
 static float vec2fMagnitude(vec2f* v);
-static void vec2fDiff(vec2f* dest, vec2f* fromVector, vec2f* toVector);
+
+/* returns the distance from `v1` to `v2` as a scalar */
 static float vec2fDist(vec2f* v1, vec2f* v2);
 
-static void vec2fAdd(vec2f* dest, vec2f* v1, vec2f* v2)
+/* gets the vector from `fromVector` to `toVector` and stores it in `dest` as a vec2f */
+static void vec2fDiff(vec2f* dest, vec2f* fromVector, vec2f* toVector);
+
+/* adds `src1` and `src2`, stores the result in dest. */
+static void vec2fAdd(vec2f* dest, vec2f* src1, vec2f* src2);
+
+/* scales `src` by `scalar` and puts the result in `dest` */
+static void vec2fScalarProduct(vec2f* dest, vec2f* src, float scalar);
+
+/* get the normalised (unit vector) version of `src` and put the result in `dest` */
+static void vec2fNormalise(vec2f* dest, vec2f* src);
+
+/* return the angle from `fromVector` to `toVector` in radians*/
+static float vec2fAngleRadians(vec2f* fromVector, vec2f* toVector);
+
+/* return the angle from `fromVector` to `toVector` in degrees*/
+static float vec2fAngleDegrees(vec2f* fromVector, vec2f* toVector);
+
+/* get a normalised vector from an `angle` in degrees, store in `dest`*/
+static void vec2fNormalisedVectorFromAngleDegrees(vec2f* dest, float angle);
+
+/* get a normalised vector from an `angle` in radians, store in `dest`*/
+static void vec2fNormalisedVectorFromAngleRadians(vec2f* dest, float angle);
+
+
+
+static float vec2fMagnitude(vec2f* v)
 {
-	dest->x = v1->x + v2->x;
-	dest->y = v1->y + v2->y;
+	return sqrt(pow(v->x, 2) + pow(v->y, 2));
 }
 
 static float vec2fDist(vec2f* v1, vec2f* v2)
@@ -43,15 +70,23 @@ static void vec2fDiff(vec2f* dest, vec2f* fromVector, vec2f* toVector)
 	dest->y = toVector->y - fromVector->y;
 }
 
-static float vec2fMagnitude(vec2f* v)
+static void vec2fAdd(vec2f* dest, vec2f* src1, vec2f* src2)
 {
-	return sqrt(pow(v->x, 2) + pow(v->y, 2));
+	dest->x = src1->x + src2->x;
+	dest->y = src1->y + src2->y;
 }
 
-static void vec2fScalarProduct(vec2f* dest, vec2f* v1, float scalar)
+static void vec2fScalarProduct(vec2f* dest, vec2f* src, float scalar)
 {
-	dest->x = v1->x * scalar;
-	dest->y = v1->y * scalar;
+	dest->x = src->x * scalar;
+	dest->y = src->y * scalar;
+}
+
+static void vec2fNormalise(vec2f* dest, vec2f* src)
+{
+	float length = vec2fMagnitude(src);
+	dest->x = src->x / length;
+	dest->y = src->y / length;
 }
 
 static float vec2fAngleRadians(vec2f* fromVector, vec2f* toVector)
@@ -67,23 +102,16 @@ static float vec2fAngleDegrees(vec2f* fromVector, vec2f* toVector)
 	return rads * RAD2DEG;
 }
 
-static void vec2fNormalise(vec2f* dest, vec2f* src)
-{
-	float length = vec2fMagnitude(src);
-	dest->x = src->x / length;
-	dest->y = src->y / length;
-}
-
-static void vec2fUnitVectorFromAngleDegrees(vec2f* dest, float angle)
+static void vec2fNormalisedVectorFromAngleDegrees(vec2f* dest, float angle)
 {
 	dest->x = cos(angle * DEG2RAD);
 	dest->y = sin(angle * DEG2RAD);
 }
 
-static void vec2fUnitVectorFromVector(vec2f* dest, vec2f* src)
+static void vec2fNormalisedVectorFromAngleRadians(vec2f* dest, float angle)
 {
-	float magnitude = vec2fMagnitude(src);
-	dest->x = src->x / magnitude;
-	dest->y = src->y / magnitude;
+	dest->x = cos(angle);
+	dest->y = sin(angle);
 }
+
 #endif
